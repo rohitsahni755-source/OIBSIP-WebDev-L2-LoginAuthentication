@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VaultAuth — Secure Login Authentication System</title>
+  <meta name="description" content="A modern, high-security browser authentication system featuring salted cryptographic hashing, protected routing, and real-time validation. Built for OIBSIP Internship Level 2 Task 4.">
+
+  <!-- Inter Font via Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Ambient Glow Effects & Subtle Grid Overlay -->
+  <div class="ambient-glow-1" aria-hidden="true"></div>
+  <div class="ambient-glow-2" aria-hidden="true"></div>
+  <div class="bg-grid-overlay" aria-hidden="true"></div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Main Container -->
+  <div class="app-container">
+
+    <!-- Top Mini Bar -->
+    <header class="top-header" id="top-header">
+      <a href="#" class="brand-badge" aria-label="VaultAuth Home">
+        <div class="brand-logo-icon">🛡️</div>
+        <div class="brand-title">Vault<span>Auth</span></div>
+      </a>
+      <div class="header-status-pill">
+        <span class="status-dot"></span>
+        <span>SYSTEM SECURE</span>
+      </div>
+    </header>
+
+    <!-- Main Viewport Area -->
+    <main class="auth-main-wrapper">
+
+      <!-- ========================================== -->
+      <!-- VIEW 1: LOGIN PAGE                         -->
+      <!-- ========================================== -->
+      <section class="auth-card" id="view-login" aria-labelledby="login-heading">
+        <div class="card-header">
+          <h1 class="card-title" id="login-heading">Welcome back</h1>
+          <p class="card-subtitle">Sign in to continue to your VaultAuth dashboard</p>
+        </div>
+
+        <!-- General Feedback Banner -->
+        <div class="general-banner hidden" id="login-general-error" role="alert"></div>
+
+        <form class="auth-form" id="form-login" novalidate>
+          <!-- Email Field -->
+          <div class="form-group">
+            <label for="login-email" class="form-label">Email address</label>
+            <div class="input-wrapper">
+              <input 
+                type="email" 
+                id="login-email" 
+                class="form-input" 
+                placeholder="name@company.com" 
+                autocomplete="email" 
+                required
+              />
+            </div>
+            <div class="field-error" id="login-email-error"></div>
+          </div>
+
+          <!-- Password Field -->
+          <div class="form-group">
+            <label for="login-password" class="form-label">Password</label>
+            <div class="input-wrapper">
+              <input 
+                type="password" 
+                id="login-password" 
+                class="form-input has-toggle" 
+                placeholder="••••••••••••" 
+                autocomplete="current-password" 
+                required
+              />
+              <button 
+                type="button" 
+                class="btn-toggle-pw" 
+                id="btn-toggle-login-pw" 
+                aria-label="Show password"
+              >👁️</button>
+            </div>
+            <div class="field-error" id="login-password-error"></div>
+          </div>
+
+          <!-- Remember Me Checkbox -->
+          <div class="form-row-checkbox">
+            <label class="checkbox-label" for="login-remember">
+              <input type="checkbox" id="login-remember" />
+              <span>Remember me</span>
+            </label>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="btn-submit" id="btn-submit-login">
+            <span>Sign In</span>
+          </button>
+        </form>
+
+        <div class="card-footer">
+          Don't have an account? 
+          <button type="button" class="link-btn" id="link-to-register">Create one</button>
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- VIEW 2: REGISTRATION PAGE                  -->
+      <!-- ========================================== -->
+      <section class="auth-card hidden" id="view-register" aria-labelledby="register-heading">
+        <div class="card-header">
+          <h1 class="card-title" id="register-heading">Create your account</h1>
+          <p class="card-subtitle">Get started with a free, secure VaultAuth account</p>
+        </div>
+
+        <!-- General Feedback Banner -->
+        <div class="general-banner hidden" id="reg-general-error" role="alert"></div>
+
+        <form class="auth-form" id="form-register" novalidate>
+          <!-- Full Name Field -->
+          <div class="form-group">
+            <label for="reg-name" class="form-label">Full Name</label>
+            <div class="input-wrapper">
+              <input 
+                type="text" 
+                id="reg-name" 
+                class="form-input" 
+                placeholder="Jane Doe" 
+                autocomplete="name" 
+                required
+              />
+            </div>
+            <div class="field-error" id="reg-name-error"></div>
+          </div>
+
+          <!-- Email Field -->
+          <div class="form-group">
+            <label for="reg-email" class="form-label">Email address</label>
+            <div class="input-wrapper">
+              <input 
+                type="email" 
+                id="reg-email" 
+                class="form-input" 
+                placeholder="jane@example.com" 
+                autocomplete="email" 
+                required
+              />
+            </div>
+            <div class="field-error" id="reg-email-error"></div>
+          </div>
+
+          <!-- Password Field -->
+          <div class="form-group">
+            <label for="reg-password" class="form-label">Password</label>
+            <div class="input-wrapper">
+              <input 
+                type="password" 
+                id="reg-password" 
+                class="form-input has-toggle" 
+                placeholder="At least 8 characters" 
+                autocomplete="new-password" 
+                required
+              />
+              <button 
+                type="button" 
+                class="btn-toggle-pw" 
+                id="btn-toggle-reg-pw" 
+                aria-label="Show password"
+              >👁️</button>
+            </div>
+            <!-- Password Strength Bar Indicator -->
+            <div class="pw-strength-wrapper">
+              <div class="pw-strength-track">
+                <div class="pw-strength-bar" id="pw-strength-bar"></div>
+              </div>
+              <div class="pw-strength-info">
+                <span>Strength: <strong id="pw-strength-text">None</strong></span>
+                <span>8+ chars, upper, lower &amp; number</span>
+              </div>
+            </div>
+            <div class="field-error" id="reg-password-error"></div>
+          </div>
+
+          <!-- Confirm Password Field -->
+          <div class="form-group">
+            <label for="reg-confirm-password" class="form-label">Confirm Password</label>
+            <div class="input-wrapper">
+              <input 
+                type="password" 
+                id="reg-confirm-password" 
+                class="form-input has-toggle" 
+                placeholder="Re-enter your password" 
+                autocomplete="new-password" 
+                required
+              />
+              <button 
+                type="button" 
+                class="btn-toggle-pw" 
+                id="btn-toggle-reg-confirm-pw" 
+                aria-label="Show password"
+              >👁️</button>
+            </div>
+            <div class="field-error" id="reg-confirm-password-error"></div>
+          </div>
+
+          <!-- Optional Terms Checkbox -->
+          <div class="form-row-checkbox">
+            <label class="checkbox-label" for="reg-terms">
+              <input type="checkbox" id="reg-terms" required checked />
+              <span>I agree to the Terms of Service &amp; Privacy Policy</span>
+            </label>
+          </div>
+          <div class="field-error" id="reg-terms-error"></div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="btn-submit" id="btn-submit-register">
+            <span>Create Account</span>
+          </button>
+        </form>
+
+        <div class="card-footer">
+          Already have an account? 
+          <button type="button" class="link-btn" id="link-to-login">Sign in</button>
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- VIEW 3: PROTECTED DASHBOARD                -->
+      <!-- ========================================== -->
+      <section class="dashboard-wrapper hidden" id="view-dashboard" aria-labelledby="dash-heading">
+        
+        <!-- User Top Navigation Bar -->
+        <div class="dashboard-nav">
+          <div class="user-profile-badge">
+            <div class="user-avatar" id="dash-avatar-initials">VA</div>
+            <div class="user-meta">
+              <span class="user-name-display" id="dash-user-name">Alex Rivera</span>
+              <span class="user-email-display" id="dash-user-email">alex@vaultauth.dev</span>
+            </div>
+          </div>
+          <button type="button" class="btn-logout" id="btn-logout" aria-label="Sign out of your account">
+            <span>🚪</span>
+            <span>Logout</span>
+          </button>
+        </div>
+
+        <!-- Hero Welcome Banner -->
+        <div class="dash-hero-card">
+          <div class="dash-badge">
+            <span>●</span> Active Protected Session
+          </div>
+          <h1 class="dash-title" id="dash-heading">
+            Welcome, <span id="dash-welcome-name">Alex</span>!
+          </h1>
+          <p class="dash-subtitle">
+            You are securely authenticated. Your connection is encrypted with zero-knowledge tokenization.
+          </p>
+        </div>
+
+        <!-- Metrics & Profile Stats Grid -->
+        <div class="dash-grid">
+          <!-- Card 1: Account Status -->
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Account Status</span>
+              <span class="stat-icon">🛡️</span>
+            </div>
+            <div class="stat-value">
+              <span class="stat-status-badge">● Authenticated</span>
+            </div>
+          </div>
+
+          <!-- Card 2: Profile Name -->
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Full Name</span>
+              <span class="stat-icon">👤</span>
+            </div>
+            <div class="stat-value" id="dash-card-profile">Alex Rivera</div>
+          </div>
+
+          <!-- Card 3: Email Address -->
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Verified Email</span>
+              <span class="stat-icon">✉️</span>
+            </div>
+            <div class="stat-value" id="dash-card-email">alex@vaultauth.dev</div>
+          </div>
+
+          <!-- Card 4: Session Status -->
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Session Login</span>
+              <span class="stat-icon">⏱️</span>
+            </div>
+            <div class="stat-value" id="dash-session-time">Active</div>
+          </div>
+        </div>
+
+        <!-- Security Activity Logs Box -->
+        <div class="security-card">
+          <h4>🔒 Security Audit &amp; Session Insights</h4>
+          <ul class="activity-list">
+            <li class="activity-item">
+              <div class="activity-desc">
+                <span>🔑</span>
+                <span>Cryptographic Salted Hash Authentication</span>
+              </div>
+              <span class="activity-time">SHA-256 Validated</span>
+            </li>
+            <li class="activity-item">
+              <div class="activity-desc">
+                <span>🛡️</span>
+                <span>Protected Route Authorization Gate</span>
+              </div>
+              <span class="activity-time">Enforced</span>
+            </li>
+            <li class="activity-item">
+              <div class="activity-desc">
+                <span>⚡</span>
+                <span>Zero Plaintext Credentials in Storage/Memory</span>
+              </div>
+              <span class="activity-time">Verified</span>
+            </li>
+          </ul>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- Subtle Footer -->
+    <footer class="app-footer">
+      <p class="footer-brand">VaultAuth — Secure Login System</p>
+      <p class="footer-internship">Built for OIBSIP Web Development &amp; Designing Internship (Level 2 Task 4)</p>
+      <p class="footer-copy">© 2026 VaultAuth Security Platform • All Rights Reserved</p>
+    </footer>
+
+  </div>
+
+  <!-- Vanilla JavaScript -->
+  <script src="script.js"></script>
+</body>
+</html>
